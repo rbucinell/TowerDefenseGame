@@ -1,7 +1,4 @@
 //Track.js
-
-var drawPath = true;
-
 function Track( json )
 {
 	//Public Variables
@@ -17,14 +14,30 @@ function Track( json )
 	var currentWave = 0;
 	
 	//Constructor Initialization	
-	for( p in json.path)
+	var tileWidth = parseInt(json.map.tile_width);
+	var tileHeight = parseInt(json.map.tile_height);
+		
+	var spawn = {
+		x: parseInt( json.map.path.spawn.x ) * tileWidth + tileWidth/2,
+		y: parseInt( json.map.path.spawn.y ) * tileHeight + tileHeight/2
+	}
+	this.Path.push( spawn);
+	
+	for( p in json.map.path.tiles)
 	{
-		this.Path.push( json.path[p] );
+		var curJPath = json.map.path.tiles[p];
+		var curPath =
+		{
+			x: parseInt( curJPath.x )*(tileWidth) + tileWidth/2,
+			y: parseInt( curJPath.y )*(tileHeight) + tileHeight/2
+		}
+		this.Path.push( curPath );		
+		//this.Path.push( json.map.path.tiles[p] );
 	}
 		
 	for( w in json.waves )
 	{
-		this.Waves.push( new Wave( this.Path, json.waves[w] ) );
+		this.Waves.push( new Wave( this, json.waves[w] ) );
 	}
 	var waveEnemies = createWaveEnemies.apply(this);
 	
@@ -43,8 +56,9 @@ function Track( json )
 	
 	this.nextWave = function()
 	{
-		currentWave++;
 		waveEnemies = createWaveEnemies.apply(this);
+		this.Waves[currentWave].startWave();
+		currentWave++;
 	}
 	
 	//////////Private functions ////////////
@@ -59,7 +73,14 @@ function Track( json )
 
 Track.prototype.update = function()
 {
-	this.Waves[this.getCurrentWave()].update();
+	if( this.getCurrentWave() >= this.Waves.length )
+	{
+		//TODO check enemies and life remaining determine win/lose
+	}
+	else
+	{
+		this.Waves[this.getCurrentWave()].update();
+	}
 }
 
 Track.prototype.draw = function( ctx )
@@ -69,39 +90,13 @@ Track.prototype.draw = function( ctx )
 	
 	this.Map.draw( ctx );
 	
-	
-	//Draw the Title
-	ctx.font = "30px Arial";
-	ctx.fillStyle = "#0000FF";
-	ctx.fillText( this.Name,475,40);
-	
-	//Draw the Wave information
-	var waveNum = this.getCurrentWave();
-	var wave = this.Waves[ waveNum ];
-	ctx.font = "12px Arial";
-	ctx.fillStyle = "#000000";
-	ctx.fillText( "["+(waveNum+1)+"] - " + wave.Name,475,60);
-		
-	//Draw the Path
-	if( drawPath )
-	{
-		
-		ctx.strokeStyle = "#000";
-		ctx.beginPath();
-		ctx.moveTo( this.Path[0].x, this.Path[0].y );
-		for( p in this.Path)
-		{
-			ctx.lineTo(this.Path[p].x, this.Path[p].y );
-		}	
-		ctx.stroke();
-	}
-	
-	var enemies = this.Waves[ waveNum ].Enemies;
-	
+	var enemies = this.Waves[ this.getCurrentWave() ].Enemies;
 	//Draw the wave Enemies
 	for( e in enemies )
 	{
 		enemies[e].draw( ctx );
 	}
+	
+		
 	
 }

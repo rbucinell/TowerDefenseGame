@@ -16,10 +16,9 @@ function Atlas()
 	var imgLoaded = false;
 	var dataLoaded = false;
 	
-	
-	
-	this.Load = function( spriteSheet, dataFile )
+	this.Load = function( spriteSheet, dataFile, trackMapReference )
 	{		
+		console.log( "Atlas Load");
 		this.SpriteSheet.onload = function(){
 			imgLoaded = true;
 			_this.SpriteSheet = this;
@@ -30,6 +29,8 @@ function Atlas()
 				if( xhttp.readyState === 4 && xhttp.status === 200 )
 				{
 					ReadXml( xhttp.responseXML );
+					if( typeof trackMapReference !== 'undefined' )
+						trackMapReference.LoadTiles();
 				}
 			};
 			xhttp.open("GET", dataFile, true);
@@ -58,10 +59,10 @@ function Atlas()
 		for( var i = 0; i < textureCount; i++)
 		{
 			var texture = new Texture( elements[i].attributes['name'].value,
-									   elements[i].attributes['x'].value,
-									   elements[i].attributes['y'].value,
-									   elements[i].attributes['width'].value,
-									   elements[i].attributes['height'].value,
+									   parseInt(elements[i].attributes['x'].value),
+									   parseInt(elements[i].attributes['y'].value),
+									   parseInt(elements[i].attributes['width'].value),
+									   parseInt(elements[i].attributes['height'].value),
 									   _this);
 			_this.Textures.push( texture );
 		}
@@ -72,6 +73,12 @@ function Atlas()
 	
 	
 	
+}
+
+//Fetches the texture by its name
+Atlas.prototype.getTextureByName = function( textureName )	
+{
+	return $.grep(this.Textures, function(e){ return e.Name == textureName; })[0];
 }
 
 Atlas.prototype.Load = function( spriteSheet, dataFile )

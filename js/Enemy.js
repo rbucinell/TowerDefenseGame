@@ -9,8 +9,11 @@ function Enemy()
 	this.height = 20;
 	this.Color = "white";
 	this.Health = 10;
-	this.Speed = 1;
+	this.Speed = 3;
+	
 	this.IsMoving = false;
+	this.AtGoal = false;
+	this.Despawn = false;
 	
 	return this;
 };
@@ -26,8 +29,17 @@ Enemy.prototype.setPath = function(path)
 
 Enemy.prototype.update = function()
 {
-	if( ! this.IsMoving )
+	console.log( "enemy update");
+	//don't move until flagged to go
+	if( !this.IsMoving )
+		return;
+	else
+		console.log( this, this.IsMoving );
+	
+	//check if dead or at goal
+	if( this.AtGoal || this.Health <= 0 )
 	{
+		this.Despawn = true;
 		return;
 	}
 	
@@ -72,13 +84,18 @@ Enemy.prototype.update = function()
 	if( atX && atY )
 	{
 		this.Path.shift();
+		if(this.Path.length === 0)
+			this.AtGoal = true;
 	}
 }
 
 Enemy.prototype.draw = function( ctx )
 {
-	ctx.fillStyle = this.Color
-	ctx.fillRect(this.x-this.width/2,this.y-this.height/2,this.width,this.height);
+	if( !this.Despawn )
+	{
+		ctx.fillStyle = this.Color
+		ctx.fillRect(this.x-this.width/2,this.y-this.height/2,this.width,this.height);
+	}
 }
 
 ////
