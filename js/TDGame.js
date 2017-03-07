@@ -74,7 +74,6 @@ function TDGame( canvas )
 		startup();
         
     };
-
 	
 	this.stop = function()
     {
@@ -86,9 +85,7 @@ function TDGame( canvas )
 	var loadTrack = function( trackJSON )
 	{
 		return new Track( trackJSON );
-	}
+	};
 	
-	
-	canvas.addEventListener( 'mouseup', handleMouseUp, false);
-	
+	canvas.addEventListener( 'mouseup', handleMouseUp, false);	
 }

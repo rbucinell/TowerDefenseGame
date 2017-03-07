@@ -3,11 +3,7 @@ function TrackInterface( canvas, track )
 {
 	this.canvas = canvas;
 	this.Track = track;
-	
-	
-	
-	this.StartWaveButton = new Button( this.getLeftEdge(),80, 100, 30, "#55F", "Next Wave" );
-	
+	this.StartWaveButton = new Button( this.getLeftEdge(),80, 100, 30, "#55F", "Next Wave" );	
 }
 
 TrackInterface.prototype.getLeftEdge = function()
