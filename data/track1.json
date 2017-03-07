@@ -131,7 +131,8 @@
         "objects": [{
                 "texture_name": "mapTile_100.png",
                 "x": 0,
-                "y": 2.8
+                "y": 2.8,
+                "comments": "2.8 should be 3, just adjusting it slightly for better image quality"
             },
             { "texture_name": "mapTile_115.png", "x": 2, "y": 3 },
             { "texture_name": "mapTile_115.png", "x": 4, "y": 5 }
