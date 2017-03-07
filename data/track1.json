@@ -128,7 +128,11 @@
                 { "texture_name": "mapTile_181.png", "x": 0, "y": 3 }
             ]
         },
-        "objects": [
+        "objects": [{
+                "texture_name": "mapTile_100.png",
+                "x": 0,
+                "y": 2.8 /*Should be 3, but we gunna fudge it to make it look better*/
+            },
             { "texture_name": "mapTile_115.png", "x": 2, "y": 3 },
             { "texture_name": "mapTile_115.png", "x": 4, "y": 5 }
         ],
