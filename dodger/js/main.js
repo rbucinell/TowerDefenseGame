@@ -16,6 +16,7 @@ function setup()
     baseScore = frameCount; 
 }
 
+
 function draw()
 {
     curScore = (Math.floor((frameCount - baseScore) / 100));
