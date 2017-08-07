@@ -110,6 +110,10 @@ Player.prototype.hit = function()
 {
     this.isHit = true;
 }
+Player.prototype.boundingBoxBuffer = function()
+{
+    return 2;
+}
 
 function setGameOver()
 {
@@ -161,7 +165,7 @@ function draw()
     //draw enemies
     enemies.forEach(function(e) 
     {
-        if( collideRectCircle( e.x, e.y, e.w, e.h, player.x, player.y, player.r -2, player.r-2 ))
+        if( collideRectCircle( e.x, e.y, e.w, e.h, player.x, player.y, player.r -player.boundingBoxBuffer(), player.r-player.boundingBoxBuffer() ))
         {
             e.hit();
             player.hit();
