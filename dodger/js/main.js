@@ -9,16 +9,20 @@ var gameOver = true;
 var timerID;
 var SECONDS = 1000;
 var timeToNextEnemy = 2 * SECONDS;
-var SPEEDUP_TIMER = 5 * SECONDS;
+var RAMPUP_TIMER = 5 * SECONDS;
+var ENEMY_BASE_WIDTH = 20, ENEMY_BASE_HEIGHT = 10;
 
 
 //Ref links: https://p5js.org/reference/
 // https://github.com/bmoren/p5.collide2D#colliderectcircle
 //http://inventwithpython.com/blog/2012/02/20/i-need-practice-programming-49-ideas-for-game-clones-to-code/
 
-function speedUp()
+function rampDifficulty()
 {
     timeToNextEnemy *= .95;
+    ENEMY_BASE_WIDTH *= 1.05
+    ENEMY_BASE_HEIGHT *= 1.05;
+
 }
 
 function byte2Hex(n)
@@ -69,14 +73,19 @@ function spawnEnemy()
 {    
     if( !gameOver)
     {
-        var eW = 100+ random(-25,25), eH = 100+random(-50,50);
-        var eX = random(width-eW), eY = -eH-1;
+        var wRand = ENEMY_BASE_WIDTH * .25;
+        var hRand = ENEMY_BASE_HEIGHT * .25;
+
+        var eW = ENEMY_BASE_WIDTH + random(-wRand,wRand);
+        var eH = ENEMY_BASE_HEIGHT + random(-hRand,hRand);
+
+        var eX = random(width-eW)
+        var eY = -eH-1;
 
         enemies.push( new Enemy( eX, eY, eW, eH));
         setTimeout( spawnEnemy, timeToNextEnemy);
     }
 }
-
 
 function Player( x, y, r)
 {
@@ -132,10 +141,10 @@ function setup()
     frameRate(60);
     textSize( 32 );
     baseScore = frameCount; 
-    player = new Player( width, height - 50 - 10, 50 );
+    player = new Player( width, height - 25 - 10, 25 );
     gameOver = false;
     setTimeout( spawnEnemy, timeToNextEnemy );
-    timerID = setInterval( speedUp, SPEEDUP_TIMER);
+    timerID = setInterval( rampDifficulty, RAMPUP_TIMER);
 }
 
 function showScore()
