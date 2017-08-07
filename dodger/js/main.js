@@ -6,17 +6,26 @@ var canvasWidth = 640;
 var canvasHeight = 480;
 var finalScore = 0;
 var gameOver = true;
+var timerID;
+var SECONDS = 1000;
+var timeToNextEnemy = 2 * SECONDS;
+var SPEEDUP_TIMER = 5 * SECONDS;
+
 
 //Ref links: https://p5js.org/reference/
 // https://github.com/bmoren/p5.collide2D#colliderectcircle
 //http://inventwithpython.com/blog/2012/02/20/i-need-practice-programming-49-ideas-for-game-clones-to-code/
 
+function speedUp()
+{
+    timeToNextEnemy *= .95;
+}
 
 function byte2Hex(n)
-  {
+{
     var nybHexString = "0123456789ABCDEF";
     return String(nybHexString.substr((n >> 4) & 0x0F,1)) + nybHexString.substr(n & 0x0F,1);
-  }
+}
 
 function RGB2Color( R, G, B )
 {
@@ -25,13 +34,13 @@ function RGB2Color( R, G, B )
 
 function Enemy(x,y,w,h,s)
 {
-    this.color = "#00FF00";
+    this.color = RGB2Color( random(256),random(256),random(256));
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.s = (typeof s !== 'undefined' ) ? s : 2;
-    this.isHit = false;
+    this.isHit = false;    
 }
 Enemy.prototype.update = function()
 {
@@ -39,10 +48,15 @@ Enemy.prototype.update = function()
     {
         this.y += this.s;
     }
+    if( this.y > height )
+    {
+        enemies.splice( enemies.indexOf(this), 1 );
+    }
 }
 Enemy.prototype.draw = function()
 {
     fill( this.color );
+    stroke("#000000");
     rect( this.x, this.y, this.w, this.h );
 }
 Enemy.prototype.hit = function()
@@ -51,23 +65,36 @@ Enemy.prototype.hit = function()
     this.color = "#FF0000";
 }
 
+function spawnEnemy()
+{    
+    if( !gameOver)
+    {
+        var eW = 100+ random(-25,25), eH = 100+random(-50,50);
+        var eX = random(width-eW), eY = -eH-1;
+
+        enemies.push( new Enemy( eX, eY, eW, eH));
+        setTimeout( spawnEnemy, timeToNextEnemy);
+    }
+}
+
+
 function Player( x, y, r)
 {
     this.x = x;
     this.y = y;
     this.r = r;
+    this.half = this.r/2;
 }
 Player.prototype.update = function( x, y )
 {
     if(!this.isHit )
     {
-        var half = this.r/2;
-
-        if( x < half ) x = half;
-        if( x + half > width ) x = width - half;
+        if( x < this.half ) x = this.half;
+        if( x + this.half > width ) x = width - this.half;
         this.x = x;
         
-        if( this.y+ half > scren)
+        if( y+ this.half > height)  y = height - this.half;
+        if( y < this.half ) y = this.half;
         this.y = y;
     }
 }
@@ -84,7 +111,12 @@ Player.prototype.hit = function()
     this.isHit = true;
 }
 
-
+function setGameOver()
+{
+    gameOver = true;
+    clearInterval( timerID );
+    finalScore = curScore;
+}
 
 
 //single run function that kicks off draw() loop
@@ -95,47 +127,45 @@ function setup()
     noCursor();
     frameRate(60);
     textSize( 32 );
-    enemies.push( new Enemy( 50,50, 100, 200 ));
     baseScore = frameCount; 
-    player = new Player( mouseX, height - 50 - 10, 50 );
+    player = new Player( width, height - 50 - 10, 50 );
     gameOver = false;
+    setTimeout( spawnEnemy, timeToNextEnemy );
+    timerID = setInterval( speedUp, SPEEDUP_TIMER);
 }
 
-
+function showScore()
+{
+    //score
+    fill( "#FFFFFF");
+    stroke("#000000"); 
+    var s = gameOver? finalScore : curScore;
+    var m = gameOver? "Final Score" : "Score";
+    
+    if( !gameOver && frameCount % 3 === 0 )
+    {
+        curScore = (Math.floor((frameCount - baseScore) / 100));
+    }    
+    text( m, canvasWidth - textWidth(m), 40  );
+    text( s, canvasWidth - textWidth(s) - 5, 80  );
+}
 //looping function.
 function draw()
 {
     //reset
     background(153);
 
-    //score   
-    fill( "#FFFFFF");
-    stroke("#000000"); 
-    var scoreBoard = "Score:\n";
-    if( !gameOver )
-    {           
-        curScore = (Math.floor((frameCount - baseScore) / 100));
-    }
-    else
-    {
-        scoreBoard = "Final Score:\n";
-    }
-    scoreBoard += curScore;
-    text( scoreBoard, canvasWidth - textWidth( scoreBoard), 40  );
-
-        //draw mouse
-    player.update( mouseX, mouseY);//, height - player.r );
-    player.draw();
-
+    //update the player, but draw him on top of enemies
+    player.update( mouseX, mouseY);
 
     //draw enemies
     enemies.forEach(function(e) 
     {
-        if( collideRectCircle( e.x, e.y, e.w, e.h, player.x, player.y, player.r, player.r ))
+        if( collideRectCircle( e.x, e.y, e.w, e.h, player.x, player.y, player.r -2, player.r-2 ))
         {
             e.hit();
             player.hit();
-            gameOver = true;
+            setGameOver();
         }
         else
         {
@@ -144,9 +174,8 @@ function draw()
         e.draw();
     }, this);
 
+    //draw player
+    player.draw();
 
-
-
-    
-
+    showScore();    
 }
