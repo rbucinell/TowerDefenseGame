@@ -12,6 +12,15 @@ var timeToNextEnemy = 2 * SECONDS;
 var RAMPUP_TIMER = 5 * SECONDS;
 var ENEMY_BASE_WIDTH = 20, ENEMY_BASE_HEIGHT = 10;
 
+var bg_img;
+
+function preload()
+{
+    bg_img = loadImage("assets/bg.jpg");
+}
+
+
+
 
 //Ref links: https://p5js.org/reference/
 // https://github.com/bmoren/p5.collide2D#colliderectcircle
@@ -136,7 +145,7 @@ function setGameOver()
 function setup()
 {
     createCanvas( canvasWidth, canvasHeight );
-    background(153);
+    background(bg_img);
     noCursor();
     frameRate(60);
     textSize( 32 );
@@ -166,10 +175,10 @@ function showScore()
 function draw()
 {
     //reset
-    background(153);
+    background(bg_img);
 
     //update the player, but draw him on top of enemies
-    player.update( mouseX, mouseY);
+    player.update( mouseX, height-player.r-5);// mouseY);
 
     //draw enemies
     enemies.forEach(function(e) 
