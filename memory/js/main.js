@@ -73,25 +73,29 @@ function draw()
 {
     background(153);
 
-    matchables.forEach( function( card )
+    for( var i = 0; i < matchables.length; i++ )
     {
-        if( card.revealed || card.matchabled)
-        {
-            fill( 240, 240,240 ); //background color of card
-            rect( card.loc.x, card.loc.y, card.loc.w, card.loc.h ); // draw background of card
+        var cur = matchables[i]; 
 
+        if( cur.revealed || cur.matched )
+        {
+            fill(240, 240, 240); //background color of card
+            rect(cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h); // draw background of card
+            
             //draw the pkmn on the card
-            image( spritesheet, card.loc.x, card.loc.y, card.loc.w, card.loc.h, card.sx, card.xy, spriteW, spriteH );
+            image(spritesheet, cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h, cur.sx, cur.sy, spriteW, spriteH );
         }
         else
         {
             //draw the back of the card (hidden)
-            image( whodatpkmn.img, card.loc.x, card.loc.y, card.loc.w, card.loc.h, whodatpkmn.sx, whodatpkmn.sy, whodatpkmn.w, whodatpkmn.h );            
-        }
-        noFill();
-        rect( card.loc.x, card.loc.y, card.loc.w, card.loc.h ); //draw border around card
-    });
+            image(whodatpkmn.img, cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h,  whodatpkmn.sx, whodatpkmn.sy, whodatpkmn.w, whodatpkmn.h );     
+        }  
+        noFill();      
+        rect(cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h); //draw border around card
+    }
 
+    fill(255,255,255)
+    text( mouseX + ', '+ mouseY, 5, 20);
 }
 
 //////////////// Helper Functions /////////////////////
