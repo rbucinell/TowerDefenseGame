@@ -35,7 +35,7 @@ function setup()
         {
             if( pkmn_count < 151 )
             {
-                pkmn.push( {id: pkmn_count++, sx: col * spriteW, sy: row * spriteH, loc: {} , revealed: false, matched: false});
+                pkmn.push( {id: pkmn_count++, sx: col * spriteW, sy: row * spriteH, loc: {} , revealed: true, matched: false});
             }            
         }
     }
@@ -72,6 +72,22 @@ function setup()
 function draw()
 {
     background(153);
+
+    matchables.forEach( function( card )
+    {
+        if( card.revealed || card.matchabled)
+        {
+            fill( 240, 240,240 ); //background color of card
+            rect( card.loc.x, card.loc.y, card.loc.w, card.loc.h ); // draw background of card
+        }
+        else
+        {
+            //draw the back of the card (hidden)
+            image( whodatpkmn.img, card.loc.x, card.loc.y, card.loc.w, card.loc.h, whodatpkmn.sx, whodatpkmn.sy, whodatpkmn.w, whodatpkmn.h );            
+        }
+        noFill();
+        rect( card.loc.x, card.loc.y, card.loc.w, card.loc.h ); //draw border around card
+    });
 
 }
 
