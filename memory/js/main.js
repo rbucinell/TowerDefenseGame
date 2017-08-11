@@ -79,6 +79,9 @@ function draw()
         {
             fill( 240, 240,240 ); //background color of card
             rect( card.loc.x, card.loc.y, card.loc.w, card.loc.h ); // draw background of card
+
+            //draw the pkmn on the card
+            image( spritesheet, card.loc.x, card.loc.y, card.loc.w, card.loc.h, card.sx, card.xy, spriteW, spriteH );
         }
         else
         {
