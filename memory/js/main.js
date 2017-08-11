@@ -39,9 +39,54 @@ function setup()
             }            
         }
     }
+
+    //populate the matchables grid with pairs of pkmn
+    while( matchables.length < grid.rows*grid.cols)
+    {
+        var rand = random(pkmn);
+        matchables.push(JSON.parse(JSON.stringify(rand)));
+        matchables.push(JSON.parse(JSON.stringify(rand)));    
+    }
+
+    //shuff the deck to get ready to play
+    matchables = shuffle( shuffle(matchables) );
+
+
+    //Locations in the grid
+    var counter = 0;
+    for( row = 0; row < grid.rows; row++ )
+    {
+        for( col = 0; col < grid.cols; col++ )
+        {
+            var location = { 
+                x: (grid.x_offset + (col * spriteW * spriteScale) + (col * grid.x_margin)), 
+                y: (grid.y_offset + (row * spriteH * spriteScale) + (row * grid.y_margin)), 
+                w: spriteW * spriteScale, 
+                h: spriteH * spriteScale 
+            };
+            matchables[counter++].loc = location;
+        }
+    }
 }
 
 function draw()
 {
+    background(153);
 
+}
+
+//////////////// Helper Functions /////////////////////
+
+/**
+ * Shuffles array in place.
+ * @param {Array} a items The array containing the items.
+ */
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
 }
