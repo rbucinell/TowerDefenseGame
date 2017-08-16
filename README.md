@@ -1,6 +1,6 @@
 # Game Project Repo
 
-## [I need Practice Programming, 49 Ideas for game clones to code]() Projects
+## [I need Practice Programming, 49 Ideas for game clones to code](https://inventwithpython.com/blog/2012/02/20/i-need-practice-programming-49-ideas-for-game-clones-to-code/) Projects
 
 ### Dodger `/dodger/` \[Status=`Done`\]
 Several bad guys fall from the top of the screen, and the user must avoid them. The player can be controlled with the arrow keys or more directly with the mouse. The longer the player lasts without being hit, the higher the score. Utilizing P5.js 
