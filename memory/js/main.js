@@ -1,5 +1,6 @@
+var cnvs;
 var canvasWidth = 900, canvasHeight = 660;
-var spritesheet;
+var spritesheet, bg;
 var whodatpkmn = {img : {}, sx: 1240, sy: 210, w: 300, h: 440 };
 var spriteW = 60, spriteH = 60;
 var spriteScale = 2;
@@ -13,12 +14,14 @@ var grid = {
     x_margin: 5,
     y_margin: 5
 }
+var score = 0;
 
 ///////////////////////  P5.JS Functions  /////////////////////////
 function preload()
 {
-    spritesheet = loadImage('assets/sprites.png');
-    whodatpkmn.img = loadImage('assets/whodat.png');
+    spritesheet     = loadImage('assets/sprites.png');
+    whodatpkmn.img  = loadImage('assets/whodat.png');
+    bg              = loadImage('assets/background.jpg');
 }
 
 function setup()
@@ -26,7 +29,8 @@ function setup()
     frameRate(30);
 
     pkmn_count = 1;
-    createCanvas( canvasWidth, canvasHeight );
+    cnvs = createCanvas( canvasWidth, canvasHeight );
+    cnvs.mousePressed( flipCard );
     
     //read the spritesheet in
     for( var row = 0; row < (spritesheet.height/spriteH); row++ )
@@ -35,7 +39,7 @@ function setup()
         {
             if( pkmn_count < 151 )
             {
-                pkmn.push( {id: pkmn_count++, sx: col * spriteW, sy: row * spriteH, loc: {} , revealed: true, matched: false});
+                pkmn.push( {id: pkmn_count++, sx: col * spriteW, sy: row * spriteH, loc: {} , revealed: false, matched: false});
             }            
         }
     }
@@ -44,8 +48,17 @@ function setup()
     while( matchables.length < grid.rows*grid.cols)
     {
         var rand = random(pkmn);
-        matchables.push(JSON.parse(JSON.stringify(rand)));
-        matchables.push(JSON.parse(JSON.stringify(rand)));    
+        var alreadyContains = false;
+        matchables.forEach( function( e ){
+            if( e.id === rand.id )
+                alreadyContains = true;
+        });
+
+        if( !alreadyContains )
+        {
+            matchables.push(JSON.parse(JSON.stringify(rand)));
+            matchables.push(JSON.parse(JSON.stringify(rand)));    
+        }
     }
 
     //shuff the deck to get ready to play
@@ -71,8 +84,9 @@ function setup()
 
 function draw()
 {
-    background(153);
+    background(bg);
 
+    //Draw cards
     for( var i = 0; i < matchables.length; i++ )
     {
         var cur = matchables[i]; 
@@ -88,14 +102,80 @@ function draw()
         else
         {
             //draw the back of the card (hidden)
-            image(whodatpkmn.img, cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h,  whodatpkmn.sx, whodatpkmn.sy, whodatpkmn.w, whodatpkmn.h );     
+            image(whodatpkmn.img, cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h,  whodatpkmn.sx, whodatpkmn.sy, whodatpkmn.w, whodatpkmn.h );
         }  
         noFill();      
         rect(cur.loc.x, cur.loc.y, cur.loc.w, cur.loc.h); //draw border around card
     }
 
-    fill(255,255,255)
-    text( mouseX + ', '+ mouseY, 5, 20);
+    //Title and Score board
+    textSize( 40 );
+
+    strokeWeight(6);
+    fill(255,255,0);
+    stroke( 0,0,255);
+    text( "Pokemon", 10, 50);
+
+    fill(255,255,255);
+    stroke( 0,0,0);
+    strokeWeight(1);
+    text(" Memory", 10+textWidth("Pokemon"), 50);
+
+    var scoreBoard = 'Score: ' + score;
+    text( scoreBoard , width - textWidth(scoreBoard)- 10, 50 );
+}
+
+//////////////// Click Handler Function /////////////////////
+
+var clickCounter = 0;
+var revealed = [];
+var waitTimer = false;
+function flipCard( e )
+{
+    if( waitTimer)
+        return;
+
+    matchables.forEach( function( card ){
+
+        if( collidePointRect( e.offsetX, e.offsetY, card.loc.x, card.loc.y, card.loc.w, card.loc.h ) )
+        {
+            if( !card.matched && !card.revealed)
+            {
+                card.revealed = !card.revealed;   
+                revealed.push( card );
+                clickCounter++;
+                score++;
+            }
+        }
+    });
+
+    if( clickCounter == 2 )
+    {
+        waitTimer = true;
+        clickCounter = 0;
+
+        //set matched cards
+        matchables.forEach( function( card ){ 
+            if( revealed[0].id === revealed[1].id && (revealed[0].id === card.id || revealed[1].id === card.id ))
+            {
+                card.matched = true;
+            }
+        });
+
+        //wait a short perioe before reseting
+        setTimeout( function()
+        {
+            matchables.forEach( c => c.revealed = false );
+
+            if( matchables.every( m => m.matched) )
+            {
+                alert( 'gameover');
+            }
+
+            revealed = [];
+            waitTimer = false;
+         }, 2000 );
+    }  
 }
 
 //////////////// Helper Functions /////////////////////
