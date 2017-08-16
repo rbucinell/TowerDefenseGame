@@ -1,7 +1,7 @@
 var cnvs;
 var canvasWidth = 900, canvasHeight = 660;
 var spritesheet, bg;
-cleavar whodatpkmn = {
+var whodatpkmn = {
     img : {}, sx: 1240, sy: 210, w: 300, h: 440 
 };
 
