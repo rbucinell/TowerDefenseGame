@@ -55,6 +55,8 @@ function draw()
             rect( grid.x_offset + j*s, grid.y_offset + i*s, s, s);
 
            if( tiles[j][i] !== 0)
-            text(tiles[j][i],grid.x_offset + j*s + s/2, grid.y_offset + i*s + s/2 )
+            text(tiles[j][i],
+                grid.x_offset + j*s + s/2 - textWidth(tiles[j][i])/2, 
+                grid.y_offset + i*s + s/2 + textSize()/2-5)
         }
 }
