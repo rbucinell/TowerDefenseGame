@@ -1,56 +1,43 @@
-////////////////////////////////////////////////////
-// Class to Load in and store an atlas
-////////////////////////////////////////////////////
-
 //Global atlas reference
-gAtlases = [];
+var gAtlases = [];
 
-function Atlas()
+class Atlas
 {
-	var _this = this;
-	
-	this.SpriteSheet = new Image();
-	this.Textures = [];
-	this.fullyloaded = false;
-	
-	var imgLoaded = false;
-	var dataLoaded = false;
-	
-	this.Load = function( spriteSheet, dataFile, trackMapReference )
-	{		
-		console.log( "Atlas Load");
-		this.SpriteSheet.onload = function(){
-			imgLoaded = true;
-			_this.SpriteSheet = this;
+	constructor( spriteSheet, dataFile, trackMapReference)
+	{
+		this.Textures = [];
+		this.fullyloaded = false;
+		
+		this.SpriteSheet = new Image();
+		fetch(spriteSheet).
+			then((response) => response.blob() ).
+			then((b) => {
+				this.SpriteSheet.src = URL.createObjectURL(b);
+			}).
+			then(() => {
+				fetch(dataFile).
+					then((response) => response.text()).
+					then( (text) => {
+						this.ReadXml( $.parseXML(text));
+						if( typeof trackMapReference !== 'undefined' )
+							trackMapReference.LoadTiles();
+					});
+				
+				
+			})
+		
 			
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function()
-			{
-				if( xhttp.readyState === 4 && xhttp.status === 200 )
-				{
-					ReadXml( xhttp.responseXML );
-					if( typeof trackMapReference !== 'undefined' )
-						trackMapReference.LoadTiles();
-				}
-			};
-			xhttp.open("GET", dataFile, true);
-			xhttp.send();
-		}
-		this.SpriteSheet.src = spriteSheet;
-		var _this = this;
-		
-		
-
 		gAtlases.push( this );
 	}
 	
-	var LoadAtlasImage = function( )
-	{
-		imgLoaded = true;
-	}
-	
-	
-	var ReadXml = function( xmlDoc )
+	/**
+	 * Reads the xml configuration 
+	 * 
+	 * @param {XMLDocument} xmlDoc the xml to parse
+	 * @memberof Atlas
+	 * @returns {void}
+	 */
+	ReadXml( xmlDoc )
 	{	
 	
 		var elements = xmlDoc.getElementsByTagName( 'SubTexture' );
@@ -59,56 +46,25 @@ function Atlas()
 		for( var i = 0; i < textureCount; i++)
 		{
 			var texture = new Texture( elements[i].attributes['name'].value,
-									   parseInt(elements[i].attributes['x'].value),
-									   parseInt(elements[i].attributes['y'].value),
-									   parseInt(elements[i].attributes['width'].value),
-									   parseInt(elements[i].attributes['height'].value),
-									   _this);
-			_this.Textures.push( texture );
+				parseInt(elements[i].attributes['x'].value),
+				parseInt(elements[i].attributes['y'].value),
+				parseInt(elements[i].attributes['width'].value),
+				parseInt(elements[i].attributes['height'].value),
+				this);
+			this.Textures.push( texture );
 		}
-		
-		_this.fullyloaded = true;
-	};
-	
-	
-	
-	
-}
-
-//Fetches the texture by its name
-Atlas.prototype.getTextureByName = function( textureName )	
-{
-	return $.grep(this.Textures, function(e){ return e.Name == textureName; })[0];
-}
-
-Atlas.prototype.Load = function( spriteSheet, dataFile )
-{
-	this.SpriteSheet.onload = function()
-	{
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function()
-		{
-			if( xhttp.readyState === 4 && xhttp.status === 200 )
-			{
-				
-				Atlas.ReadXml.call( this, xhttp.responseXML )
-				//ReadXml( xhttp.responseXML );
-			}
-		};
-		xhttp.open("GET", dataFile, true);
-		xhttp.send();
+		this.fullyloaded = true;
 	}
-	this.SpriteSheet.src = spriteSheet;
-	gAtlases.push( this );
-};
 
-var XHR = function( file, callback )
-{
-	var xhttp = new XMLHttpRequest();
+	/**
+	 * Gets a texture by the by its name
+	 * 
+	 * @param {string} textureName name of the texture to search for
+	 * @returns {Texture} a texture with the given name
+	 * @memberof Atlas
+	 */
+	getTextureByName( textureName )
+	{
+		return $.grep(this.Textures, function(e){ return e.Name == textureName; })[0]; //eslint-disable-line
+	}
 }
-
-
-AtlasDataType = {
-	JSON : "json",
-	XML : "xml"
-};

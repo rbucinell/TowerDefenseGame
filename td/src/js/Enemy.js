@@ -1,154 +1,186 @@
-////
-// Generic Enemy Class
-////
-
 var id_index = 0; //static index incrementor for Enemy ID debugging
 
-function Enemy() 
+/**
+ * Enemy class
+ * 
+ * @class Enemy
+ */
+class Enemy
 {
-    this.Id = ++id_index;
-    this.x = 0;
-    this.y = 0;
-    this.width = 20;
-    this.height = 20;
-    this.Color = "white";
-    this.Health = 10;
-    this.Speed = 3;
-
-    this.IsMoving = false;
-    this.AtGoal = false;
-    this.Despawn = false;
-
-    return this;
-};
-
-Enemy.prototype.setPath = function(path)
-{
-    this.Path = path.slice();
-    var startingPoint = this.Path.shift();
-
-    this.x = startingPoint.x;
-    this.y = startingPoint.y;
-}
-
-Enemy.prototype.update = function()
-{
-    //don't move until flagged to go
-    if( !this.IsMoving )
-        return;
-    else
-        console.log( this, this.IsMoving );
-
-    //check if dead or at goal
-    if( this.AtGoal || this.Health <= 0 )
+    constructor()
     {
-        this.Despawn = true;
-        return;
+        this.Id = ++id_index;
+        this.x = 0;
+        this.y = 0;
+        this.width = 20;
+        this.height = 20;
+        this.Color = "white";
+        this.Health = 10;
+        this.Speed = 3;
+        this._path = [];
+    
+        this.IsMoving = false;
+        this.AtGoal = false;
+        this.Despawn = false;
     }
 
-    var nextPoint = this.Path[0];
-    var atX = false, atY = false;
-
-    var xdist = Math.abs( this.x - nextPoint.x );
-    if( xdist < this.Speed )
+    set Path ( path )
     {
-        this.x = nextPoint.x;
-        atX = true;
+        this._path = path.slice();
+        var startingPoint = this._path.shift();
+    
+        this.x = startingPoint.x;
+        this.y = startingPoint.y;
     }
-    else
+    get Path () { return this._path; }
+
+    /**
+     * Update logic for the Enemy object
+     * 
+     * @returns {void}
+     * @memberof Enemy
+     */
+    update()
     {
-        if( this.x > nextPoint.x )
+        //don't move until flagged to go
+        if( !this.IsMoving )
+            return;
+        
+        //check if dead or at goal
+        if( this.AtGoal || this.Health <= 0 )
         {
-            this.x = this.x - this.Speed;
+            this.Despawn = true;
+            return;
+        }
+
+        var nextPoint = this.Path[0];
+        var atX = false, atY = false;
+
+        var xdist = Math.abs( this.x - nextPoint.x );
+        if( xdist < this.Speed )
+        {
+            this.x = nextPoint.x;
+            atX = true;
         }
         else
         {
-            this.x = this.x + this.Speed;
+            if( this.x > nextPoint.x )
+            {
+                this.x = this.x - this.Speed;
+            }
+            else
+            {
+                this.x = this.x + this.Speed;
+            }
         }
-    }
 
-    var ydist = Math.abs( this.y - nextPoint.y );
+        var ydist = Math.abs( this.y - nextPoint.y );
 
-    if(ydist < this.Speed)
-    {
-        this.y = nextPoint.y;
-        atY = true;
-    }
-    else 
-    {
-        if( this.y > nextPoint.y )
+        if(ydist < this.Speed)
         {
-            this.y = this.y - this.Speed;
+            this.y = nextPoint.y;
+            atY = true;
         }
-        else
+        else 
         {
-            this.y = this.y + this.Speed;
+            if( this.y > nextPoint.y )
+            {
+                this.y = this.y - this.Speed;
+            }
+            else
+            {
+                this.y = this.y + this.Speed;
+            }
+        }
+        if( atX && atY )
+        {
+            this.Path.shift();
+            if( this.Path.length === 0 )
+                this.AtGoal = true;
         }
     }
-    if( atX && atY )
+
+    /**
+     * Draws the enemy object 
+     * @param {Context2D} ctx The context to draw the enemy on
+     * @memberof Enemy
+     * @returns {void}
+     */
+    draw( ctx )
     {
-        this.Path.shift();
-        if( this.Path.length === 0 )
-            this.AtGoal = true;
+        if( !this.Despawn)
+        {
+            ctx.fillStyle = this.Color
+            ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        }
     }
 }
 
-Enemy.prototype.draw = function( ctx )
+class RedEnemy extends Enemy
 {
-    if( !this.Despawn)
+    constructor()
     {
-        ctx.fillStyle = this.Color
-        ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        super();
+        this.Color = "red";
+        this.Health = 1;
+    }
+
+    get Path ()
+    {
+        return super.Path;
+    }
+
+    set Path( val )
+    {
+        super.Path = val;
     }
 }
 
-////
-// Red Enemy Class, Inherits Enemy
-////
-function RedEnemy()
+class OrangeEnemy extends Enemy
 {
-    this.Color = "red";
-    this.Health = 1;
-}
-RedEnemy.prototype = new Enemy();
-
-////
-// Orange Enemy Class, Inherits Enemy
-////
-function OrangeEnemy()
-{
-    this.Color = "orange";
-    this.Health = 2;
-}
-OrangeEnemy.prototype = new Enemy();
-
-
-////
-// Enemy Factory Class. Creates enemies based on input from JSON
-////
-function EnemyFactory() {}
-EnemyFactory.prototype.createEnemy = function( type, path )
-{
-    var parentClass = null;
-
-    if( type === "red" )
+    constructor()
     {
-        parentClass = RedEnemy;
-    } 
-    else if( type === "orange" ) 
-    {
-        parentClass = OrangeEnemy;
-    } 
-    else 
-    {
-        parentClass = Enemy;
+        super();
+        this.Color = "orange";
+        this.Health = 2;
     }
+}
 
-    //Return the class, if its not found return nothing
-    if( parentClass !== null ) 
+
+class EnemyFactory
+{
+    /**
+     * Creates an Enemy based on type
+     * 
+     * @static
+     * @memberof EnemyFactory
+     * @param {string} type The enemy type
+     * @param {any} path The path the enemy will follow
+     * @returns {Enemy} an Enemy or a subclass
+     */
+    static createEnemy( type, path )
     {
-        var obj = new parentClass();
-        obj.setPath( path );
-        return obj;
+        var parentClass = null;
+        
+        if( type === "red" )
+        {
+            parentClass = RedEnemy;
+        } 
+        else if( type === "orange" ) 
+        {
+            parentClass = OrangeEnemy;
+        } 
+        else 
+        {
+            parentClass = Enemy;
+        }
+    
+        //Return the class, if its not found return nothing
+        if( parentClass !== null ) 
+        {
+            var obj = new parentClass();
+            obj.Path = path;
+            return obj;
+        }
     }
 }

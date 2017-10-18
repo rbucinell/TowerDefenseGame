@@ -1,98 +1,95 @@
-//Track.js
-function Track( json )
+class Track
 {
-    //Public Variables
-    this.Name = json.name;
-    this.Difficulty = json.difficulty;
-    this.Map = new TrackMap( json.map );
-    this.Path = new Array();
-    this.Waves = new Array();
-
-    waveEnemies = [];
-
-    //Private Variables
-    var currentWave = 0;
-
-    //Constructor Initialization	
-    var tileWidth = parseInt( json.map.tile_width );
-    var tileHeight = parseInt( json.map.tile_height );
-
-    var spawn = {
-        x: parseInt( json.map.path.spawn.x ) * tileWidth + tileWidth / 2,
-        y: parseInt( json.map.path.spawn.y ) * tileHeight + tileHeight / 2
-    }
-    this.Path.push( spawn );
-
-    for( p in json.map.path.tiles )
+    constructor( json )
     {
-        var curJPath = json.map.path.tiles[ p ];
-        var curPath = {
-            x: parseInt( curJPath.x ) * ( tileWidth ) + tileWidth / 2,
-            y: parseInt( curJPath.y ) * ( tileHeight ) + tileHeight / 2
+        this._name = json.name;
+        this._difficutly = json._difficutly;
+        this._map = new TrackMap( json.map );
+        this._path = [];
+        this._waves = [];
+        this._waveEnemies = [];
+        this._curWave = 0;
+        
+        var tileWidth = parseInt( json.map.tile_width );
+        var tileHeight = parseInt( json.map.tile_height );
+
+        var spawn = {
+            x: parseInt( json.map.path.spawn.x ) * tileWidth + tileWidth / 2,
+            y: parseInt( json.map.path.spawn.y ) * tileHeight + tileHeight / 2
         }
-        this.Path.push( curPath );
-        //this.Path.push( json.map.path.tiles[p] );
+        this.Path.push( spawn );
+
+        for( var p of json.map.path.tiles )
+        {
+            var curPath = {
+                x: parseInt( p.x ) * ( tileWidth ) + tileWidth / 2,
+                y: parseInt( p.y ) * ( tileHeight ) + tileHeight / 2
+            }
+            this.Path.push( curPath );
+            //this.Path.push( json.map.path.tiles[p] );
+        }
+
+        for( var w of  json.waves )
+        {
+            this._waves.push( new Wave( this, w ) );
+        }
+        this._waveEnemies = this._waves[ this.CurrentWave ].Enemies;
     }
 
-    for( w in json.waves )
-    {
-        this.Waves.push( new Wave( this, json.waves[ w ] ) );
+    get Path(){
+        return this._path;
     }
-    var waveEnemies = createWaveEnemies.apply( this );
-
-    //////////Public functions ////////////
-
-    //Accessors	
-    this.getCurrentWave = function()
+    set Path( val )
     {
-        return currentWave;
+        this._path = val;
     }
 
-    this.getEnemies = function()
-    {
-        return waveEnemies;
+    get Waves(){
+        return this._waves;
     }
 
-    this.nextWave = function() 
-    {
-        waveEnemies = createWaveEnemies.apply( this );
-        this.Waves[ currentWave ].startWave();
-        //currentWave++;
-        currentWave = currentWave + 0;
+    get Map(){
+        return this._map;
     }
 
-    //////////Private functions ////////////
+    get CurrentWave(){ return this._curWave; }
 
-    function createWaveEnemies()
-    {
-        waveEnemies = this.Waves[ currentWave ].Enemies;
+    set CurrentWave( val ){ this._curWave = val; }
+
+    get Enemies() { return this._waveEnemies; }
+
+
+    nextWave() {
+    
+
+
+        this.Waves.some( (e) => {
+            if( !e.IsActive)
+            {
+                e.startWave();
+            }
+            return !e.IsActive;
+        });
     }
 
-}
 
-Track.prototype.update = function()
-{
-    if( this.getCurrentWave() >= this.Waves.length ) 
-    {
-        //TODO check enemies and life remaining determine win/lose
-    } 
-    else 
-    {
-        this.Waves[ this.getCurrentWave() ].update();
+    update() {
+        if( this.CurrentWave >= this._waves.length )
+        {
+            //TODO check enemies and remainng life to determine win/loss
+        }
+        else
+        {
+            this.Waves[ this.CurrentWave ].update();
+        }
+
     }
-}
 
-Track.prototype.draw = function( ctx )
-{
-    //Draw the track's background Image
-    //ctx.drawImage( this.MapImage, 0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    this.Map.draw( ctx );
-
-    var enemies = this.Waves[ this.getCurrentWave() ].Enemies;
-    //Draw the wave Enemies
-    for( e in enemies )
-    {
-        enemies[e].draw( ctx );
+    draw( ctx ){
+        this.Map.draw( ctx );
+        for( var e of this._waveEnemies )
+        {
+            e.draw( ctx );
+        }
     }
 }
