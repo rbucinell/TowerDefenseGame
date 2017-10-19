@@ -36,6 +36,10 @@ class Track
         this._waveEnemies = this._waves[ this.CurrentWave ].Enemies;
     }
 
+    get Name(){
+        return this._name;
+    }
+
     get Path(){
         return this._path;
     }
@@ -59,17 +63,18 @@ class Track
     get Enemies() { return this._waveEnemies; }
 
 
-    nextWave() {
+    nextWave() 
+    {
     
-
-
-        this.Waves.some( (e) => {
-            if( !e.IsActive)
+        for( let i = 0; i < this.Waves.length; i++ )
+        {
+            const cur = this.Waves[i];
+            if( !cur.IsActive )
             {
-                e.startWave();
+                cur.startWave();
+                break;
             }
-            return !e.IsActive;
-        });
+        }
     }
 
 
@@ -80,16 +85,13 @@ class Track
         }
         else
         {
-            this.Waves[ this.CurrentWave ].update();
+            this.Waves.forEach( (w) =>  w.update() );
         }
 
     }
 
     draw( ctx ){
         this.Map.draw( ctx );
-        for( var e of this._waveEnemies )
-        {
-            e.draw( ctx );
-        }
+        this.Waves.forEach( (w) => w.draw(ctx) );
     }
 }
