@@ -64,7 +64,7 @@ class TrackInterface
 		var waveNum = lastIndexActive;
 		if( waveNum < this.Track.Waves.length )
 		{
-			ctx.fillText( `[${waveNum+1}}] - ${this.Track.Waves[ waveNum ].Hint}`, startX, 60);
+			ctx.fillText( `[${waveNum+1}] - ${this.Track.Waves[ waveNum ].Hint}`, startX, 60);
 		}
 		else
 		{
