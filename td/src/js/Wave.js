@@ -59,7 +59,14 @@ class Wave
 			}
 		});
 		this.Enemies = this.Enemies.filter( (el) => !el.Despawn );
-		this.Enemies.forEach( (e) => e.update());
-		
+		this.Enemies.forEach( (e) => e.update());		
+	}
+
+	draw( ctx )
+	{
+		if( this.isStarted )
+		{
+			this.Enemies.forEach( (e) => e.draw(ctx ));
+		}
 	}
 }

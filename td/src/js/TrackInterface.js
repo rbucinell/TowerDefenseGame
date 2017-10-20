@@ -11,6 +11,7 @@ class TrackInterface
 	loadTrack( track )
 	{
 		this._track = track;
+		this.startWaveButton = new Button( this.LeftEdge, 80, 100, 30, "#55F", "Next Wave");
 	}
 	
 	get Track()
@@ -50,10 +51,20 @@ class TrackInterface
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "#000000";	
 		
-		var waveNum = this.Track.CurrentWave;	
+		let lastIndexActive = 0;
+		for( let i = 0; i < this.Track.Waves.length; i++ )
+		{
+			if( this.Track.Waves[i].IsActive )
+				lastIndexActive = i;
+			else
+				break;
+		}
+
+
+		var waveNum = lastIndexActive;
 		if( waveNum < this.Track.Waves.length )
 		{
-			ctx.fillText( "["+(waveNum+1)+"] - " + this.Track.Waves[ waveNum ].Name,startX,60);
+			ctx.fillText( `[${waveNum+1}}] - ${this.Track.Waves[ waveNum ].Hint}`, startX, 60);
 		}
 		else
 		{
