@@ -146,6 +146,15 @@ class OrangeEnemy extends Enemy
     }
 }
 
+class GreenEnemy extends Enemy
+{
+    constructor()
+    {
+        super();
+        this.Color = "green";
+        this.Health = 5;
+    }
+}
 
 class EnemyFactory
 {
@@ -170,6 +179,8 @@ class EnemyFactory
         {
             parentClass = OrangeEnemy;
         } 
+        else if ( type === "green")
+            parentClass = GreenEnemy;
         else 
         {
             parentClass = Enemy;
