@@ -8,7 +8,7 @@ Several bad guys fall from the top of the screen, and the user must avoid them. 
 ### Memory Puzzle `/memory/` \[Status=`Done`\]
 A board full of overturned cards. There is a pair for each card. The player flips over two cards. If they match, then they stay overturned. Otherwise they flip back. The player needs to overturn all the cards in the fewest moves to win. Utilizing P5.js
 
-### Sliding Puzzle `/sliding/` \[Status=`New`\] 
+### Sliding Puzzle `/sliding/` \[Status=`Done`\] 
 A 4x4 board of numbered tiles has one missing space and is randomly set up. To win the game, the player must slide tiles over to put the tiles back in order. Utilizing P5.js
 
 ---
