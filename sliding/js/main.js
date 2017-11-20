@@ -14,11 +14,9 @@ var grid = {
     cols: 4
 };
 
-
-
-function preload()
-{
-	
+var tileBG = {
+    offset: 0,
+    range: 70
 }
 
 function setup()
@@ -28,7 +26,12 @@ function setup()
 
     frameRate(60);
     textSize( 30 );
-    
+    colorMode( HSL );
+    shuffleTiles();
+}
+
+function shuffleTiles()
+{
     for( let i = 0;i < 1000; i++)
     {
         //random pt
@@ -59,34 +62,41 @@ function draw()
 {
     clear();
     background('gray');
+    stroke( 'black');
+    
     for( var i = 0; i < grid.cols; i++ )
         for( var j = 0; j < grid.rows;j++ )
         {
-            fill( 'white');
-            stroke( 'black');
-            if( tiles[j][i] === 0)
-            {
-                fill(0,0,0,0);
-                stroke(0,0,0,0);
-            }
-            rect( grid.x_offset + j*s, grid.y_offset + i*s, s, s);
+            strokeWeight( 2);     
 
-           if( tiles[j][i] !== 0)
-            text(tiles[j][i],
-                grid.x_offset + j*s + s/2 - textWidth(tiles[j][i])/2, 
-                grid.y_offset + i*s + s/2 + textSize()/2-5)
+            if( tiles[j][i] !== 0 )
+            {
+                fill( (tiles[j][i]/(grid.rows*grid.cols))* tileBG.range + tileBG.offset, 100, 50 );
+                rect( grid.x_offset + j*s, grid.y_offset + i*s, s, s);
+                fill( 'white');
+                strokeWeight( 3 );
+                text(tiles[j][i],
+                    grid.x_offset + j*s + s/2 - textWidth(tiles[j][i])/2, 
+                    grid.y_offset + i*s + s/2 + textSize()/2-grid.y_margin);
+            }            
         }
     if( isWin() )
     {
-        fill( 0 );
-        stroke( 0 );
-        text(size)
-        text( 'you win', 10, 10 );
+        fill( 'white' );
+        text( 'you win, click to reset', 10, textSize() + grid.y_margin );
     }
 }
 
 function canvasClick( mouseEvent )
 {
+    //if we already won, reset
+    if( isWin() )
+    {
+        shuffleTiles();
+        return;
+    }
+        
+
     let col = Math.floor((mouseEvent.x - grid.x_offset) / s );
     let row = Math.floor((mouseEvent.y-grid.y_offset) / s );
     
