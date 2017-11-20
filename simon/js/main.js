@@ -17,7 +17,7 @@ function setup()
     osc.freq(240);
     osc.amp(5);
     //osc.start();
-    
+
     var cvs = createCanvas( canvasWidth, canvasHeight );
     cvs.mousePressed( clickListener );
     textSize( 30 );
@@ -40,12 +40,23 @@ function draw()
         text( 'click to start', 10, textSize())
     else
         text( 'Score [' + pattern.length + ']', canvasWidth - textWidth('Score [' + pattern.length + ']'), textSize() )
-
+    if( playerGuess && pattern.length !== 0)
+    {
+        var command = playerGuess ? "Repeat the pattern" : "Listen to Simon!";
+        text( command, canvasWidth/2-textWidth(command)/2, canvasHeight- textSize() + 10 );
+    }
     for( let i = 0; i < buttons.length; i++)
     {
         fill( buttons[i].name );
         rect( buttons[i].loc.x, buttons[i].loc.y, tileSize, tileSize);
-    }    
+    }
+    pattern.forEach( (p) => {
+        if( p.highlighted)
+        {
+            fill( 'white' );
+            rect( p.loc.x, p.loc.y, tileSize, tileSize);
+        }
+    });
 }
 
 function incPattern()
@@ -56,8 +67,13 @@ function incPattern()
 var simonSpeaking = false;
 var playerGuess = false;
 var guessIndex = 0;
+
 function clickListener( e)
 {
+    
+    if( simonSpeaking )
+        return;
+    console.log( 'click');
     if( playerGuess && !simonSpeaking )
     {
         let next = pattern[guessIndex++];
@@ -72,28 +88,42 @@ function clickListener( e)
         else if( guessCorrect && pattern.length === guessIndex)
         {
             guessIndex = 0;
+            playerGuess = false;
             incPattern();
-            speak(0);
+            speak();
         }
     }
     else if( !simonSpeaking )
     {
-        console.log( e );
         incPattern();
-        speak(0);
+        speak();
     }
 }
 
-function speak( i )
+function speak( )
 {
+    console.log( '-----');
+    simonSpeaking = true;
+    pattern[0].highlighted = true;
+    setTimeout( simonSpeak, 500, 0 );
+}
+
+function simonSpeak( i )
+{
+    if( i >= 1)
+    pattern[i-1].highlighted = false;
+
     if( i >= pattern.length)
-    {
-        simonSpeaking = false;
+    {        
         playerGuess = true;
+        simonSpeaking = false;
+        pattern.forEach( (p) => p.highlighted = false );
     }
     else
     {
         console.log( pattern[i]);
-        setTimeout( speak( i+1),  2000 );
+        pattern[i].highlighted = true;
+        
+        setTimeout( simonSpeak, 1000, i+1 );
     }
 }
