@@ -9,8 +9,15 @@ var buttons = [
     { name: 'green', x: 1, y: 1}
 ];
 
+var osc = new p5.Oscillator();
+
 function setup()
 {
+    osc.setType('sine');
+    osc.freq(240);
+    osc.amp(5);
+    //osc.start();
+    
     var cvs = createCanvas( canvasWidth, canvasHeight );
     cvs.mousePressed( clickListener );
     textSize( 30 );
