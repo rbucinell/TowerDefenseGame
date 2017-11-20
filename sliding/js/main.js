@@ -1,17 +1,14 @@
 var canvasWidth = 640;
 var canvasHeight = 480;
-var tiles = [
-    [0,4,8,12],
-    [1,5,9,13],
-    [2,6,10,14],
-    [3,7,11,15],
-];
-var s = 100;
+var tiles = [];
+let squareCount = 4;
+
 var grid = {
-    x_offset: 100,  y_offset: 35,
+    x_offset: 50,  y_offset: 40,
     x_margin: 5, y_margin: 5,
-    rows: 4,
-    cols: 4
+    rows: squareCount,
+    cols: squareCount,
+    s: 100
 };
 
 var tileBG = {
@@ -21,8 +18,19 @@ var tileBG = {
 
 function setup()
 {
+    grid.s = (canvasWidth - grid.x_offset*2) / grid.cols;
+    canvasHeight = 2 * grid.y_offset + grid.rows * grid.s;
+
     let cvs = createCanvas( canvasWidth, canvasHeight );
     cvs.mousePressed(canvasClick);
+
+    let counter = 0;
+    for( let i = 0; i < grid.rows; i++)
+        {
+            tiles[i] = [];
+            for( let j = 0; j < grid.cols; j++ )
+                tiles[i].push( counter++);
+        }
 
     frameRate(60);
     textSize( 30 );
@@ -35,12 +43,12 @@ function shuffleTiles()
     for( let i = 0;i < 1000; i++)
     {
         //random pt
-        let x = Math.floor(Math.random()*grid.cols);
-        let y = Math.floor(Math.random()*grid.rows);
+        let x = Math.floor(Math.random()*grid.rows);
+        let y = Math.floor(Math.random()*grid.cols);
 
         //random 2nd pt
-        let nx = Math.floor(Math.random()*grid.cols);
-        let ny = Math.floor(Math.random()*grid.rows);
+        let nx = Math.floor(Math.random()*grid.rows);
+        let ny = Math.floor(Math.random()*grid.cols);
 
         //swap
         let temp = tiles[x][y];
@@ -72,12 +80,12 @@ function draw()
             if( tiles[j][i] !== 0 )
             {
                 fill( (tiles[j][i]/(grid.rows*grid.cols))* tileBG.range + tileBG.offset, 100, 50 );
-                rect( grid.x_offset + j*s, grid.y_offset + i*s, s, s);
+                rect( grid.x_offset + j * grid.s, grid.y_offset + i * grid.s, grid.s, grid.s);
                 fill( 'white');
                 strokeWeight( 3 );
                 text(tiles[j][i],
-                    grid.x_offset + j*s + s/2 - textWidth(tiles[j][i])/2, 
-                    grid.y_offset + i*s + s/2 + textSize()/2-grid.y_margin);
+                    grid.x_offset + j* grid.s + grid.s/2 - textWidth(tiles[j][i])/2, 
+                    grid.y_offset + i* grid.s + grid.s/2 + textSize()/2 - grid.y_margin);
             }            
         }
     if( isWin() )
@@ -97,8 +105,8 @@ function canvasClick( mouseEvent )
     }
         
 
-    let col = Math.floor((mouseEvent.x - grid.x_offset) / s );
-    let row = Math.floor((mouseEvent.y-grid.y_offset) / s );
+    let col = Math.floor((mouseEvent.x - grid.x_offset) / grid.s );
+    let row = Math.floor((mouseEvent.y-grid.y_offset) /   grid.s );
     
     //If click is not in bounds, don't do anything
     if( col >= grid.cols || col < 0 || row >= grid.rows || row < 0 )
