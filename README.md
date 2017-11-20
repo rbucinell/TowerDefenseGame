@@ -11,7 +11,7 @@ A board full of overturned cards. There is a pair for each card. The player flip
 ### Sliding Puzzle `/sliding/` \[Status=`Done`\] 
 A 4x4 board of numbered tiles has one missing space and is randomly set up. To win the game, the player must slide tiles over to put the tiles back in order. Utilizing P5.js
 
-### Simon Says `/simon/` \[Status=`New`\] 
+### Simon Says `/simon/` \[Status=`In Progress`\] 
 Four colored buttons light up in a specific pattern. After displaying the pattern, the player must repeat the pattern by clicking the buttons in proper order. The pattern gets longer each time the player completes the pattern. If the player presses a wrong button, the game ends.
 
 ---
