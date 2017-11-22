@@ -1,10 +1,12 @@
 class Wave
 {
-	constructor( parent, jsonobj)
+	constructor( parent, jsonobj, atlas)
 	{
+		console.log('creating wave', atlas );
 		this.waveCounter = 0;
 		
 		this.Parent = parent;
+		this.Atlas = atlas;
 		this.Name = jsonobj.name;
 		this.Hint = jsonobj.hint;
 		this.Enemies = new Array();
@@ -31,6 +33,7 @@ class Wave
 	}
 
 	get IsActive(){ return this.waveStartTime > 0; }
+	
 	/**
 	 * Starts sending the wave of enemies
 	 * 

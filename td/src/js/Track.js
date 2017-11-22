@@ -31,7 +31,7 @@ class Track
 
         for( var w of  json.waves )
         {
-            this._waves.push( new Wave( this, w ) );
+            this._waves.push( new Wave( this, w, this.Map.Atlas ) );
         }
         this._waveEnemies = this._waves[ this.CurrentWave ].Enemies;
     }
