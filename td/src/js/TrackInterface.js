@@ -1,11 +1,12 @@
-class TrackInterface
+import Button from './Button.js'
+
+export default class TrackInterface
 {
 	constructor( canvas)
 	{
 		this.canvas = canvas;
-		this._track;
+		this._track = null;
 		this.startWaveButton = new Button( this.LeftEdge, 80, 100, 30, "#55F", "Next Wave");
-
 	}
 
 	loadTrack( track )
@@ -26,7 +27,9 @@ class TrackInterface
 
 	get LeftEdge()
 	{
-		return this.Track ? (this.Track.Map.TileWidth * this.Track.Map.MapTileWidth + this.Track.Map.TileWidth + 10) : 0;
+		return this.Track 
+				? (this.Track.Map.TileWidth * this.Track.Map.MapTileWidth + this.Track.Map.TileWidth + 10) 
+				: 0;
 	}
 
 	update()

@@ -1,7 +1,9 @@
+import Texture from './Texture.js'
+
 //Global atlas reference
 var gAtlases = [];
 
-class Atlas
+export default class Atlas
 {
 	constructor( spriteSheet, dataFile, trackMapReference)
 	{
@@ -18,7 +20,7 @@ class Atlas
 				fetch(dataFile).
 					then((response) => response.text()).
 					then( (text) => {
-						this.ReadXml( $.parseXML(text));
+						this.ReadXml( $.parseXML(text)); // eslint-disable-line
 						if( typeof trackMapReference !== 'undefined' )
 							trackMapReference.LoadTiles();
 					});
@@ -65,6 +67,6 @@ class Atlas
 	 */
 	getTextureByName( textureName )
 	{
-		return $.grep(this.Textures, function(e){ return e.Name == textureName; })[0]; //eslint-disable-line
+		return $.grep(this.Textures, function(e){ return e.Name == textureName; })[0]; // eslint-disable-line
 	}
 }

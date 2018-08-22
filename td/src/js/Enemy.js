@@ -5,7 +5,7 @@ var id_index = 0; //static index incrementor for Enemy ID debugging
  * 
  * @class Enemy
  */
-class Enemy
+export class Enemy
 {
     constructor()
     {
@@ -32,7 +32,7 @@ class Enemy
         this.x = startingPoint.x;
         this.y = startingPoint.y;
     }
-    get Path () { return this._path; }
+    get Path() { return this._path; }
 
     /**
      * Update logic for the Enemy object
@@ -156,7 +156,7 @@ class GreenEnemy extends Enemy
     }
 }
 
-class EnemyFactory
+export class EnemyFactory
 {
     /**
      * Creates an Enemy based on type
@@ -169,27 +169,27 @@ class EnemyFactory
      */
     static createEnemy( type, path )
     {
-        var parentClass = null;
+        var EnemyClass = null;
         
         if( type === "red" )
         {
-            parentClass = RedEnemy;
+            EnemyClass = RedEnemy;
         } 
         else if( type === "orange" ) 
         {
-            parentClass = OrangeEnemy;
+            EnemyClass = OrangeEnemy;
         } 
         else if ( type === "green")
-            parentClass = GreenEnemy;
+            EnemyClass = GreenEnemy;
         else 
         {
-            parentClass = Enemy;
+            EnemyClass = Enemy;
         }
     
         //Return the class, if its not found return nothing
-        if( parentClass !== null ) 
+        if( EnemyClass !== null ) 
         {
-            var obj = new parentClass();
+            var obj = new EnemyClass();
             obj.Path = path;
             return obj;
         }

@@ -5,7 +5,7 @@ const ButtonState =
 	DOWN: "DOWN"
 };
 
-class Button
+export default class Button
 {
 	constructor( x, y, w, h, fill, text )
 	{

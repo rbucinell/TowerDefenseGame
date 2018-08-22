@@ -1,4 +1,4 @@
-class Texture
+export default class Texture
 {
 	constructor( name, x, y, w, h, atlas )
 	{

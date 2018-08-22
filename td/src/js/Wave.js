@@ -1,4 +1,7 @@
-class Wave
+import {EnemyFactory} from './Enemy.js'
+import {game_time} from './main.js'
+
+export default class Wave
 {
 	constructor( parent, jsonobj, atlas)
 	{

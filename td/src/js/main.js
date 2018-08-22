@@ -1,5 +1,8 @@
-var DEBUG_MODE = true;
-var game_time = 0;
+import Track from './Track.js';
+import TrackInterface from './TrackInterface.js';
+
+export var DEBUG_MODE = true;
+export var game_time = 0;
 
 class TDGame
 {
@@ -65,7 +68,8 @@ class TDGame
         if( DEBUG_MODE ) console.log( 'game shutting down');
     }
 
-    loop(){
+    loop()
+    {
         const _this = this.game;
         game_time++;
         if( _this.IsRunning )
@@ -89,7 +93,7 @@ class TDGame
 }
 
 $(function(){
-    let game = new TDGame( document.getElementById('canvas'));
+    const game = new TDGame( document.getElementById('canvas'));
     window['game'] = game;
     if( DEBUG_MODE ) console.log( game );
     game.start();

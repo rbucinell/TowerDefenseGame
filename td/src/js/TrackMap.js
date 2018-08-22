@@ -1,4 +1,6 @@
-class TrackMap
+import Atlas from './Atlas.js'
+
+export default class TrackMap
 {
 	constructor( json )
 	{

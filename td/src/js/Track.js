@@ -1,4 +1,7 @@
-class Track
+import TrackMap from './TrackMap.js'
+import Wave from './Wave.js'
+
+export default class Track
 {
     constructor( json )
     {
