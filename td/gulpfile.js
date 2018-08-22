@@ -2,8 +2,7 @@
 
 var gulp 		= require('gulp'),	
 	del			= require('del'),
-	concat		= require('gulp-concat'),
-	watch		= require('gulp-watch');
+	concat		= require('gulp-concat')
 
 var src = 'src/';
 var dest = 'dist/';
@@ -46,8 +45,7 @@ gulp.task('img', function(){
 });
 
 gulp.task('js', function(){
-	return gulp.src( [src +'js/lib/*.js', src+ 'js/*.js', src+'js/main.js'] )
-		.pipe( concat('app.min.js'))
+	gulp.src( [src +'js/lib/*.js', src+ 'js/*.js', src+'js/main.js'] )
 		.pipe( gulp.dest(dest + 'js/'));
 });
 
