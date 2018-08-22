@@ -1,5 +1,7 @@
 import Atlas from './Atlas.js'
 
+var DEBUG_MODE = true;
+
 export default class TrackMap
 {
 	constructor( json )
@@ -59,6 +61,7 @@ export default class TrackMap
 		
 		//Render the Terrain
 		const tileCount = this.TerrainTiles.length;
+
 		for( let i = 0; i < tileCount; i++)
 		{
 			var curTerrain = this.TerrainTiles[i];
@@ -74,8 +77,8 @@ export default class TrackMap
 				
 				ctx.fillStyle = "black";
 				ctx.font = "8px Arial";
-				var tileNumber = curTerrain.texture_name.substring( 8, curTerrain.texture_name.length-4);
-				ctx.fillText(curTerrain.texture_name.substring( 8, curTerrain.texture_name.length-4) ,curTerrain.x, curTerrain.y+8); //y+8 is y+fontsize
+				const tileNumber = curTerrain.texture_name.substring( 8, curTerrain.texture_name.length-4);
+				ctx.fillText(tileNumber ,curTerrain.x, curTerrain.y+8); //y+8 is y+fontsize
 			}
 		}
 		
