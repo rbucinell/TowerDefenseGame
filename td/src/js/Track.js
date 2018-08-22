@@ -39,32 +39,44 @@ export default class Track
         this._waveEnemies = this._waves[ this.CurrentWave ].Enemies;
     }
 
-    get Name(){
+    get Name()
+    {
         return this._name;
     }
 
-    get Path(){
+    get Path()
+    {
         return this._path;
     }
+
     set Path( val )
     {
         this._path = val;
     }
 
-    get Waves(){
+    get Waves()
+    {
         return this._waves;
     }
 
-    get Map(){
+    get Map()
+    {
         return this._map;
     }
 
-    get CurrentWave(){ return this._curWave; }
+    get CurrentWave()
+    { 
+        return this._curWave; 
+    }
 
-    set CurrentWave( val ){ this._curWave = val; }
+    set CurrentWave( val )
+    {
+        this._curWave = val;
+    }
 
-    get Enemies() { return this._waveEnemies; }
-
+    get Enemies() {
+        return this._waveEnemies;
+    }
 
     nextWave() 
     {
@@ -80,8 +92,8 @@ export default class Track
         }
     }
 
-
-    update() {
+    update()
+    {
         if( this.CurrentWave >= this._waves.length )
         {
             //TODO check enemies and remainng life to determine win/loss
@@ -90,10 +102,10 @@ export default class Track
         {
             this.Waves.forEach( (w) =>  w.update() );
         }
-
     }
 
-    draw( ctx ){
+    draw( ctx )
+    {
         this.Map.draw( ctx );
         this.Waves.forEach( (w) => w.draw(ctx) );
     }
