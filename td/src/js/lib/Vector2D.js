@@ -23,7 +23,7 @@ export default class Vector2D
 
 	rot()
 	{
-		return Math.degrees( Math.acos( this.x / this.mag() ) );
+		return Math.toDeg( Math.acos( this.x / this.mag() ) );
 	}
 
 	static CreateFromRadialCord( r, deg )
@@ -31,26 +31,26 @@ export default class Vector2D
 		const getXComp = ( degrees ) => {
 			let value = 0;
 			if( degrees <= 90 )
-				value = Math.cos( Math.radians( degrees));
+				value = Math.cos( Math.toRad( degrees));
 			else if( degrees > 90 && degrees <= 180 )
-				value = -1 * Math.cos( Math.radians(180-degrees));
+				value = -1 * Math.cos( Math.toRad(180-degrees));
 			else if( degrees > 180 && degrees <= 270)
-				value = -1 * Math.sin( Math.radians( 270-degrees));
+				value = -1 * Math.sin( Math.toRad( 270-degrees));
 			else
-				value = Math.cos( Math.radians(360-degrees));
+				value = Math.cos( Math.toRad(360-degrees));
 			return value;
 		}
 
 		const getYComp = (degrees) => {
 			let value = 0;
 			if( degrees <= 90 )
-				value = Math.sin( Math.radians( degrees));
+				value = Math.sin( Math.toRad( degrees));
 			else if( degrees > 90 && degrees <= 180 )
-				value = Math.sin( Math.radians(180-degrees));
+				value = Math.sin( Math.toRad(180-degrees));
 			else if( degrees > 180 && degrees <= 270)
-				value = Math.cos( Math.radians( 270-degrees));
+				value = Math.cos( Math.toRad( 270-degrees));
 			else
-				value = -1 * Math.sin( Math.radians(360-degrees));
+				value = -1 * Math.sin( Math.toRad(360-degrees));
 			return value;
 		}
 
@@ -58,12 +58,12 @@ export default class Vector2D
 	}
 }
 
-Math.radians = function( degree )
+Math.toRad = function( degree )
 {
 	return degree * ( Math.PI / 180 );
 }
 
-Math.degrees = function( radian )
+Math.toDeg = function( radian )
 {
 	return radian * ( 180/ Math.PI );
 }
