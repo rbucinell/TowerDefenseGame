@@ -58,7 +58,7 @@ export default class Wave
 			return;
 		this.Enemies.forEach( (e) => {
 			if( e.StartTime < game_time )
-				e.IsMoving = true;
+				e.isMoving = true;
 			if( (typeof e === 'undefined' || e.AtGoal || e.Health <= 0) && e.Despawn == false)
 			{
 				e.Despawn = true;

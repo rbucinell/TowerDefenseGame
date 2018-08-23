@@ -1,3 +1,5 @@
+import Entity from './Entity.js';
+
 var id_index = 0; //static index incrementor for Enemy ID debugging
 
 /**
@@ -5,21 +7,19 @@ var id_index = 0; //static index incrementor for Enemy ID debugging
  * 
  * @class Enemy
  */
-export class Enemy
+export class Enemy extends Entity
 {
     constructor()
     {
+        super();
         this.Id = ++id_index;
-        this.x = 0;
-        this.y = 0;
-        this.width = 20;
-        this.height = 20;
+        this.w = 20;
+        this.h = 20;
+        this.spd = 3;
         this.Color = "white";
-        this.Health = 10;
-        this.Speed = 3;
         this._path = [];
     
-        this.IsMoving = false;
+        this.isMoving = false;
         this.AtGoal = false;
         this.Despawn = false;
     }
@@ -28,10 +28,9 @@ export class Enemy
     {
         this._path = path.slice();
         var startingPoint = this._path.shift();
-    
-        this.x = startingPoint.x;
-        this.y = startingPoint.y;
+        this.pos = startingPoint;
     }
+
     get Path() { return this._path; }
 
     /**
@@ -43,11 +42,11 @@ export class Enemy
     update()
     {
         //don't move until flagged to go
-        if( !this.IsMoving )
+        if( !this.isMoving )
             return;
         
         //check if dead or at goal
-        if( this.AtGoal || this.Health <= 0 )
+        if( this.AtGoal || this.hp <= 0 )
         {
             this.Despawn = true;
             return;
@@ -56,40 +55,35 @@ export class Enemy
         var nextPoint = this.Path[0];
         var atX = false, atY = false;
 
-        var xdist = Math.abs( this.x - nextPoint.x );
-        if( xdist < this.Speed )
+        var xdist = Math.abs( this.pos.x - nextPoint.x );
+        if( xdist < this.spd )
         {
-            this.x = nextPoint.x;
+            this.pos.x = nextPoint.x;
             atX = true;
         }
         else
         {
-            if( this.x > nextPoint.x )
-            {
-                this.x = this.x - this.Speed;
-            }
-            else
-            {
-                this.x = this.x + this.Speed;
-            }
+            this.pos.x = ( this.pos.x > nextPoint.x ) 
+            ? this.pos.x - this.spd 
+            : this.pos.x + this.spd;
         }
 
-        var ydist = Math.abs( this.y - nextPoint.y );
+        var ydist = Math.abs( this.pos.y - nextPoint.y );
 
-        if(ydist < this.Speed)
+        if(ydist < this.spd)
         {
-            this.y = nextPoint.y;
+            this.pos.y = nextPoint.y;
             atY = true;
         }
         else 
         {
-            if( this.y > nextPoint.y )
+            if( this.pos.y > nextPoint.y )
             {
-                this.y = this.y - this.Speed;
+                this.pos.y = this.pos.y - this.spd;
             }
             else
             {
-                this.y = this.y + this.Speed;
+                this.pos.y = this.pos.y + this.spd;
             }
         }
         if( atX && atY )
@@ -111,7 +105,7 @@ export class Enemy
         if( !this.Despawn)
         {
             ctx.fillStyle = this.Color
-            ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+            ctx.fillRect(this.pos.x - this.w / 2, this.pos.y - this.h / 2, this.w, this.h);
         }
     }
 }
@@ -122,7 +116,7 @@ class RedEnemy extends Enemy
     {
         super();
         this.Color = "red";
-        this.Health = 1;
+        this.hp = 1;
     }
 
     get Path ()
@@ -142,7 +136,7 @@ class OrangeEnemy extends Enemy
     {
         super();
         this.Color = "orange";
-        this.Health = 2;
+        this.hp = 2;
     }
 }
 
@@ -152,7 +146,8 @@ class GreenEnemy extends Enemy
     {
         super();
         this.Color = "green";
-        this.Health = 5;
+        this.hp = 5;
+        this.spd = 5;
     }
 }
 
