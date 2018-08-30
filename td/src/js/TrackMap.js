@@ -8,8 +8,6 @@ export default class TrackMap
 	{
 		this.json = json;
 		this.Atlas = new Atlas( json.atlas_map, json.atlas_data, this);
-		this.TileWidth = parseInt( json.tile_width);
-		this.TileHeight = parseInt( json.tile_height);
 
 		this.TileWidth = parseInt( json.tile_width );
 		this.TileHeight = parseInt(json.tile_height);
@@ -25,6 +23,7 @@ export default class TrackMap
 		
 		this.TerrainTiles = [];
 		this.PathTiles = [];
+		this.Path = [];
 		this.ObjectTiles = [];
 	}
 
@@ -43,6 +42,38 @@ export default class TrackMap
 		populateList( this.TerrainTiles, 	this.json.terrain, 	 this.TileWidth, this.TileHeight );
 		populateList( this.ObjectTiles, 	this.json.objects, 	 this.TileWidth, this.TileHeight );		
 		populateList( this.PathTiles, 		this.json.path.tiles, this.TileWidth, this.TileHeight );
+
+		const fp = this.PathTiles[0];
+		const edge = {
+			x: fp.x,
+			y: fp.y
+		};
+		
+		if( fp.y === 0)
+		{
+			edge.x = fp.x + this.TileWidth / 2;
+		}else if(fp.y  === this.height - this.TileHeight)
+		{
+			edge.x = fp.x + this.TileWidth / 2;
+			edge.y = this.height;
+		}
+		else if( fp.x === 0 )
+		{
+			edge.y = fp.y + this.TileHeight / 2;
+		}
+		else if( fp.x === this.width - this.TileWidth )
+		{
+			edge.x = fp.x + this.TileWidth /2 ;
+			edge.y = this.height;
+		}
+		this.Path.push(edge);
+		for( let i = 0; i < this.PathTiles.length; i++)
+		{
+			this.Path.push( { 
+				x: this.PathTiles[i].x + this.TileWidth/2, 
+				y: this.PathTiles[i].y + this.TileHeight/2
+			});
+		}
 	}
 
 	draw( ctx )
@@ -83,13 +114,42 @@ export default class TrackMap
 		}
 		
 		//Render the path
+		const settings = {
+			lineWidth: ctx.lineWidth,
+			lineDash: ctx.getLineDash(),
+			strokeStyle: ctx.strokeStyle
+		}		
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = 'gold';
+		ctx.setLineDash([
+			10,
+			1
+		]);
+		
+		ctx.beginPath();
+		ctx.moveTo( this.Path[0].x, this.Path[0].y);
+		for( let i = 1; i < this.Path.length; i++)
+		{
+			const prev = this.Path[i-1];
+			const cur = this.Path[i];
+			ctx.moveTo(prev.x, prev.y);
+			ctx.lineTo(cur.x, cur.y);			
+		}
+		ctx.stroke();
+
+
+		ctx.lineWidth = settings.lineWidth;
+		ctx.setLineDash( settings.lineDash );
+		ctx.strokeStyle = settings.strokeStyle;
+		
+		/* //Draw using the Map tiles
 		const pathCount = this.PathTiles.length;
 		for( let i = 0; i < pathCount; i++ )
 		{
 			const curPath = this.PathTiles[i];
 			texture = this.Atlas.getTextureByName( curPath.texture_name );
 			ctx.drawImage(this.Atlas.SpriteSheet, texture.x, texture.y, texture.w, texture.h,  curPath.x, curPath.y, this.TileWidth, this.TileHeight);
-		}
+		}*/
 		
 		//Render the objects
 		const objCount = this.ObjectTiles.length;
@@ -99,5 +159,6 @@ export default class TrackMap
 			texture = this.Atlas.getTextureByName( curObj.texture_name );
 			ctx.drawImage(this.Atlas.SpriteSheet, texture.x, texture.y, texture.w, texture.h,  curObj.x, curObj.y, this.TileWidth, this.TileHeight);
 		}
+		
 	}
 }

@@ -5,7 +5,6 @@ export default class Wave
 {
 	constructor( parent, jsonobj, atlas)
 	{
-		console.log('creating wave', atlas );
 		this.waveCounter = 0;
 		
 		this.Parent = parent;

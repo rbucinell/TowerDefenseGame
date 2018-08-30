@@ -65,7 +65,6 @@ class TDGame
     shutdown()
     {        
         game_time = 0;
-        if( DEBUG_MODE ) console.log( 'game shutting down');
     }
 
     loop()
@@ -95,6 +94,5 @@ class TDGame
 $(function(){
     const game = new TDGame( document.getElementById('canvas'));
     window['game'] = game;
-    if( DEBUG_MODE ) console.log( game );
     game.start();
 });

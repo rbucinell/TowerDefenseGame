@@ -18,6 +18,7 @@ export class Enemy extends Entity
         this.spd = 3;
         this.Color = "white";
         this._path = [];
+        this.curTarget = 0;
     
         this.isMoving = false;
         this.AtGoal = false;
@@ -52,45 +53,36 @@ export class Enemy extends Entity
             return;
         }
 
-        var nextPoint = this.Path[0];
+        var nextPoint = this.Path[this.curTarget];
         var atX = false, atY = false;
 
         var xdist = Math.abs( this.pos.x - nextPoint.x );
-        if( xdist < this.spd )
-        {
-            this.pos.x = nextPoint.x;
+        if( xdist > this.spd )
+            xdist = this.spd
+        if( xdist === 0)
             atX = true;
-        }
         else
-        {
             this.pos.x = ( this.pos.x > nextPoint.x ) 
-            ? this.pos.x - this.spd 
-            : this.pos.x + this.spd;
-        }
+                ? this.pos.x - xdist 
+                : this.pos.x + xdist;
 
         var ydist = Math.abs( this.pos.y - nextPoint.y );
-
-        if(ydist < this.spd)
-        {
-            this.pos.y = nextPoint.y;
+        if( ydist > this.spd )
+            ydist = this.spd;
+        if( ydist === 0 )
             atY = true;
-        }
-        else 
-        {
-            if( this.pos.y > nextPoint.y )
-            {
-                this.pos.y = this.pos.y - this.spd;
-            }
-            else
-            {
-                this.pos.y = this.pos.y + this.spd;
-            }
-        }
+        else
+            this.pos.y = ( this.pos.y > nextPoint.y )
+                ? this.pos.y - ydist
+                : this.pos.y + ydist;
         if( atX && atY )
         {
-            this.Path.shift();
-            if( this.Path.length === 0 )
+            this.curTarget++;
+            if( this.curTarget === this.Path.length )
+            {
                 this.AtGoal = true;
+                this.curTarget--;//keep this at end to prevent index out of bounds
+            }
         }
     }
 
@@ -185,7 +177,7 @@ export class EnemyFactory
         if( EnemyClass !== null ) 
         {
             var obj = new EnemyClass();
-            obj.Path = path;
+            obj.Path = path.slice();
             return obj;
         }
     }

@@ -88,7 +88,5 @@ TrackInterface.prototype.handleMouseUp = function( event )
 		this.startWaveButton.handleMouseUp( event );
 		if( this.Track.CurrentWave <=  this.Track.Waves.length -1 )
 			this.Track.nextWave();
-		else
-			console.log( 'out of waves' );
 	}
 }

@@ -51,6 +51,5 @@ export default class Button
 		{
 			this.State = ButtonState.DEFAULT;
 		}
-		console.log( "button clicked" );
 	}	
 }
