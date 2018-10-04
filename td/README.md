@@ -1,2 +1,3 @@
-# TowerDefenseGame
-A simple tower defense game to practice Javascript skills
+This project has moved to:
+
+https://github.com/rbucinell/tower-defense
