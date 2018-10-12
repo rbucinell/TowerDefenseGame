@@ -1,20 +1,56 @@
-const cell_size = 40;
-let player;
-
-
+let player, cell, rows, cols;
 
 function keyPressed( keyEvent )
 {
-    console.log( `Key ${keyEvent.keyCode} was pressed` );
-    player.keyPressed( keyEvent );
+    if( keyEvent.keyCode === LEFT_ARROW )
+    {
+        player.x -= (player.x - 1 < 0) ? 0 : 1;
+    }
+    else if( keyEvent.keyCode === RIGHT_ARROW )
+    {
+        player.x += (player.x + 1 >= cols) ? 0 : 1;
+    }
+    else if( keyEvent.keyCode === DOWN_ARROW )
+    {
+        player.y += (player.y + 1 >= rows) ? 0 : 1;
+    }
+    else if( keyEvent.keyCode === UP_ARROW )
+    {
+        player.y -= (player.y - 1 < 0) ? 0 : 1;
+    }
+    if( player.item !== null )
+    {
+        player.item.updatePositionBasedOnPlayer( player.x, player.y );
+    }
 }
 
+let currentMap = [];
+let map_data = {};
+
+function preload()
+{
+    map_data = loadJSON( "./data/maps.json", configureData );
+}
+
+function configureData()
+{
+    map_data.config.cell_height = Math.floor(map_data.config.height / map_data.config.rows);
+    map_data.config.cell_width = Math.floor(map_data.config.width / map_data.config.cols);
+    cols = map_data.config.cols;
+    rows = map_data.config.rows;
+    cell = {
+        width: map_data.config.cell_width,
+        height: map_data.config.cell_height
+    }
+    console.log(map_data);
+}
 
 function setup()
 {
-    createCanvas( 1001, 601 );
-    player = new Player( 3 * cell_size, 2 * cell_size, cell_size);
-    
+    createCanvas( map_data.config.width+1, map_data.config.height+1 );
+    player = new Player( 3, 2, cell);
+
+    currentMap = map_data.templates.exterior_walls;
 }
 
 function draw()
@@ -22,13 +58,17 @@ function draw()
     background( 'gray');
     fill(255)
     stroke(0);
-
-    for( let i = 0; i < width; i+= cell_size)
+    for( let c= 0; c < cols; c++)
     {
-        for( let j = 0; j < height;j += cell_size )
+        for( let r = 0; r < rows; r++ )
         {
-            rect( i, j, cell_size, cell_size);
+            let val = currentMap[r][c];
+            fill( val === 1 ? "yellow" : "white");
+            rect( c * cell.width, r * cell.height, cell.width, cell.height);
         }
     }
+    line(width/2,0,width/2, height);
+    line(0,height/2,width,height/2);
     player.draw();
 }
+
