@@ -1,0 +1,17 @@
+{
+    "origin" : {
+        "x": 0,
+        "y": 0
+    },
+    "rooms": [
+        [{
+            "templates": [
+                "exterior_walls",
+                "four_doors"
+            ],
+            "layout" : [[]],
+            "enemies": [],
+            "items" : []
+        }]
+    ]
+}

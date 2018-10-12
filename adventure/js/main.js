@@ -26,10 +26,10 @@ function keyPressed( keyEvent )
 
 let currentMap = [];
 let map_data = {};
-
+let level1 = {};
 function preload()
 {
-    map_data = loadJSON( "./data/maps.json", configureData );
+    map_data =  loadJSON( "./data/maps.json", configureData );
 }
 
 function configureData()
@@ -42,14 +42,14 @@ function configureData()
         width: map_data.config.cell_width,
         height: map_data.config.cell_height
     }
-    console.log(map_data);
+    level1 = new Level(loadJSON( "./data/level-1.json" ), map_data);
 }
 
 function setup()
 {
     createCanvas( map_data.config.width+1, map_data.config.height+1 );
     player = new Player( 3, 2, cell);
-
+    console.log( level1 );
     currentMap = map_data.templates.exterior_walls;
 }
 
