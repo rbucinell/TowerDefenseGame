@@ -8,8 +8,8 @@ class Item{
 
     updatePositionBasedOnPlayer( playerX, playerY)
     {
-        this.x = playerX + this.cell_size + 5;
-        this.y = playerY - 5;
+        this.x = playerX * this.cell_size.width + this.cell_size.width + 5;
+        this.y = playerY * this.cell_size.height - 5;
     }
 
     draw()
