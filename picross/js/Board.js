@@ -1,4 +1,6 @@
-const reducer = (acc, cur) => Math.max(acc, cur.length);
+const LargestElement = (acc, cur) => Math.max(acc, cur.length);
+const SpanVal = ( acc, cur ) => cur === null ? acc : acc + cur + 1;
+const CalcVals = span =>  Math.max(0, (span.reduce( SpanVal, 0 ) -1));
 
 class Board 
 {
@@ -20,9 +22,9 @@ class Board
 
         this.display = {
             //In order to calculate the number of columsn we need to konw the longest clue row + gridCount
-            cols: clues.rows.reduce(reducer, 0) + s,
+            cols: clues.rows.reduce(LargestElement, 0) + s,
             //and vise-versa
-            rows: clues.cols.reduce(reducer, 0) + s
+            rows: clues.cols.reduce(LargestElement, 0) + s
         }
     }
     
@@ -80,25 +82,25 @@ class Board
         }
     }
 
-    isValid()
+    get ColClueVals()
     {
-        const spanVal = ( acc, cur ) => cur === null ? acc : acc + cur + 1;
-        let valid = true;
+        console.log(this.clues.cols.map( CalcVals ));
+        
+        return this.clues.cols.map( CalcVals );
+    }
 
-        this.clues.cols.forEach( (col,i) => {
-            let count = Math.max(0, (col.reduce( spanVal, 0 ) -1) );
-            console.log( `col[${i}] = ${count}`)
-            if( count > this.size )
-                valid = false;
-        });
+    get RowClueVals()
+    {
+        return this.clues.rows.map( CalcVals );
+    }
 
-        this.clues.rows.forEach( (row, i) =>{
-            let count = Math.max(0, row.reduce( spanVal, 0 ) -1) ;
-            console.log( `row[${i}] = ${count}`)
-            if( count > this.size )
-                valid = false;
-        });
-
-        return valid;
+    areCluesValid()
+    {
+        const CountGreaterThanSize = count => count > this.size;
+        
+        let colValid = !(this.ColClueVals.some( CountGreaterThanSize ));
+        let rowValid = !(this.RowClueVals.some( CountGreaterThanSize ));
+        console.log( 'areCluesValid', colValid, rowValid );
+        return colValid && rowValid;
     }
 }
