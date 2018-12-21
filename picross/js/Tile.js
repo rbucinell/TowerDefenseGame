@@ -19,9 +19,5 @@ class Tile
             default:
                 return 'white';
         }
-        let x = padding + this.c * this.s;
-        let y = padding + this.r * this.s;
-        text(`(${this.r},${this.c})`, x, y + textSize() )
-        rect(x, y, this.s, this.s );
     }
 }
