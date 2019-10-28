@@ -40,6 +40,10 @@ function draw()
         s.draw();
     });
 
+    snake.forEach(s => {
+        s.x += s.w;
+    });
+
 }
 
 function keyPressed()
